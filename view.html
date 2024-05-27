@@ -100,12 +100,12 @@ console.table(vertex)
 var prevTime = performance.now();
 const moveSpeed = 20;
 const keymap = {
-    "forward": "w",
-    "back": "s",
-    "left": "a",
-    "right": "d",
-    "up": ",",
-    "down": ".",
+    "forward": ["e","w"],
+    "back": ["i","s"],
+    "left": ["u","a"],
+    "right": ["f","d"],
+    "up": [","],
+    "down": ["."],
 }
 draw()
 function draw() {
@@ -143,22 +143,31 @@ function draw() {
         const cameraDirection = new THREE.Vector3();
         camera.getWorldDirection(cameraDirection).projectOnPlane(camera.up).normalize();
 
+
         // WASDで前進/後退
-        if (keys[keymap.forward]) camera.position.addScaledVector(cameraDirection, moveDistance);
-        if (keys[keymap.back]) camera.position.addScaledVector(cameraDirection, -moveDistance);
+        if (lookupkeydown(keymap.forward)) camera.position.addScaledVector(cameraDirection, moveDistance);
+        if (lookupkeydown(keymap.back)) camera.position.addScaledVector(cameraDirection, -moveDistance);
 
         // 左右移動
         const cameraRight = new THREE.Vector3();
         camera.getWorldDirection(cameraRight).cross(camera.up);
-        if (keys[keymap.left]) camera.position.addScaledVector(cameraRight, -moveDistance);
-        if (keys[keymap.right]) camera.position.addScaledVector(cameraRight, moveDistance);
-        if (keys[keymap.up]) camera.position.y += moveDistance;
-        if (keys[keymap.down]) camera.position.y -= moveDistance;
+        if (lookupkeydown(keymap.left)) camera.position.addScaledVector(cameraRight, -moveDistance);
+        if (lookupkeydown(keymap.right)) camera.position.addScaledVector(cameraRight, moveDistance);
+        if (lookupkeydown(keymap.up)) camera.position.y += moveDistance;
+        if (lookupkeydown(keymap.down)) camera.position.y -= moveDistance;
     }
     prevTime = performance.now();
     //console.log(camera)
 }
 
+function lookupkeydown(keyarr) {
+    for (let i of keyarr) {
+        if (keys[i]) {
+            return true
+        }
+    }
+    return false
+}
 
 blocker.addEventListener( 'click', (e)=>{
     controls.lock();

@@ -18,6 +18,32 @@ while line:
 f.close()
 print(vertex)
 
+# 点の座標を取得
+imgvertex = {}
+f = open('imgvertex.txt', 'r', encoding='UTF-8')
+line = f.readline()
+label = {}
+fname = "_"
+while line:
+    if (line.rstrip("\n")==""):
+        line = f.readline()
+        continue
+    if (line[0]=="!"):
+        print(line[1:-1])
+        fname = line[1:-1]
+        if (not fname in imgvertex):
+            imgvertex[fname] = {}
+            label[fname] = []
+        line = f.readline()
+        continue
+    if (line.rstrip("\n").split(" ")[0] in label[fname]):
+        print("名前 "+line.rstrip("\n").split(" ")[0]+" の重複")
+    imgvertex[fname][line.rstrip("\n").split(" ")[0]]  = np.array([float(line.rstrip("\n").split(" ")[1].split(",")[1]),float(line.rstrip("\n").split(" ")[1].split(",")[0])])
+    label[fname].append(line.rstrip("\n").split(" ")[0])
+    line = f.readline()
+f.close()
+print(imgvertex)
+
 
 
 
@@ -42,6 +68,14 @@ while line:
     if (line[0]=="#"):
         line = f.readline()
         continue
+    if (line[0]=="!"):
+        print(line[1:-1].split(","))
+        fname = line[1:-1].split(",")[0]
+        X = int(line[1:-1].split(",")[1])
+        Y = int(line[1:-1].split(",")[2])
+        im = np.array(Image.open('image/'+fname).resize((X,Y)))
+        line = f.readline()
+        continue
     if (line.rstrip("\n")==""):
         file = open('image'+str(id)+'.ply', 'w')
         file.writelines(["""ply
@@ -64,17 +98,11 @@ end_header
 
     data = line.rstrip("\n").split(",")
     print(data)
-    X = int(data[10])
-    Y = int(data[11])
 
-    im = np.array(Image.open('image/'+data[9]).resize((X,Y)))
 
-    size = X*Y
-    number += size
-
-    A = np.array([int(data[4]),int(data[3])])
-    B = np.array([int(data[6]),int(data[5])])
-    C = np.array([int(data[8]),int(data[7])])
+    A = imgvertex[fname][data[0]]
+    B = imgvertex[fname][data[1]]
+    C = imgvertex[fname][data[2]]
 
     a = vertex[data[0]]
     b = vertex[data[1]]
@@ -89,6 +117,7 @@ end_header
     for x in range(im.shape[0]):
         for y in range(im.shape[1]):
             if (include(np.array([x,y]), A,B,C)):
+                number+=1
                 P = np.array([x,y])
                 res = np.linalg.solve(M, (P-A).reshape(2, 1))
                 pos = ab*res[0]+ac*res[1]+a
