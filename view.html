@@ -50,7 +50,7 @@ console.log(PLYLoader)
 var loader = new PLYLoader();
 var mat = new THREE.PointsMaterial({
   vertexColors: true, // plyファイルから読み込んだ色を反映させる
-  size: 0.1, // 点の大きさ
+  size: 0.06, // 点の大きさ
 });
 var clock = new THREE.Clock(true);
 var scene = new THREE.Scene()
@@ -83,6 +83,11 @@ loader.load("image0.ply", function(geo) {
     scene.add(mesh);
 });
 loader.load("image1.ply", function(geo) {
+    geo.computeVertexNormals();
+    const mesh = new THREE.Points(geo, mat);
+    scene.add(mesh);
+});
+loader.load("image2.ply", function(geo) {
     geo.computeVertexNormals();
     const mesh = new THREE.Points(geo, mat);
     scene.add(mesh);

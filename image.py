@@ -16,10 +16,7 @@ def include(p,a,b,c):
     return (c1 >= 0 and c2 >= 0 and c3 >= 0)or(c1 <= 0 and c2 <= 0 and c3 <= 0)
 
 
-X = 400
-Y = 800
-
-im = np.array(Image.open('image/1.jpg').resize((X,Y)))
+im = np.array(Image.open('image/2.jpg'))
 
 
 plt.imshow(im)

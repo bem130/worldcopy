@@ -73,7 +73,12 @@ while line:
         fname = line[1:-1].split(",")[0]
         X = int(line[1:-1].split(",")[1])
         Y = int(line[1:-1].split(",")[2])
-        im = np.array(Image.open('image/'+fname).resize((X,Y)))
+        image = Image.open('image/'+fname)
+        print(image.size)
+        Xscale = X/image.size[0]
+        Yscale = Y/image.size[1]
+        print(Xscale,Yscale)
+        im = np.array(image.resize((X,Y)))
         line = f.readline()
         continue
     if (line.rstrip("\n")==""):
@@ -100,9 +105,9 @@ end_header
     print(data)
 
 
-    A = imgvertex[fname][data[0]]
-    B = imgvertex[fname][data[1]]
-    C = imgvertex[fname][data[2]]
+    A = np.array([imgvertex[fname][data[0]][0]*Yscale,imgvertex[fname][data[0]][1]*Xscale])
+    B = np.array([imgvertex[fname][data[1]][0]*Yscale,imgvertex[fname][data[1]][1]*Xscale])
+    C = np.array([imgvertex[fname][data[2]][0]*Yscale,imgvertex[fname][data[2]][1]*Xscale])
 
     a = vertex[data[0]]
     b = vertex[data[1]]
